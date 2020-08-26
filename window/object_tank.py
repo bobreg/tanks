@@ -7,35 +7,41 @@ class Tank:
         self.x = x
         self.y = y
         self.orientation = orientation
+        self.coordinates = [[self.x, self.y],
+                            [self.x - 1, self.y],
+                            [self.x + 1, self.y],
+                            [self.x - 1, self.y + 1],
+                            [self.x + 1, self.y + 1],
+                            [self.x, self.y - 1]]
 
     def paint_tank(self):
         if self.orientation == 'top':
-            coordinates = [[self.x, self.y],
-                           [self.x - 1, self.y],
-                           [self.x + 1, self.y],
-                           [self.x - 1, self.y + 1],
-                           [self.x + 1, self.y + 1],
-                           [self.x, self.y - 1]]
+            self.coordinates = [[self.x, self.y],
+                                [self.x - 1, self.y],
+                                [self.x + 1, self.y],
+                                [self.x - 1, self.y + 1],
+                                [self.x + 1, self.y + 1],
+                                [self.x, self.y - 1]]
         elif self.orientation == 'down':
-            coordinates = [[self.x, self.y],
-                           [self.x - 1, self.y],
-                           [self.x + 1, self.y],
-                           [self.x - 1, self.y - 1],
-                           [self.x + 1, self.y - 1],
-                           [self.x, self.y + 1]]
+            self.coordinates = [[self.x, self.y],
+                                [self.x - 1, self.y],
+                                [self.x + 1, self.y],
+                                [self.x - 1, self.y - 1],
+                                [self.x + 1, self.y - 1],
+                                [self.x, self.y + 1]]
         elif self.orientation == 'right':
-            coordinates = [[self.x, self.y],
-                           [self.x, self.y + 1],
-                           [self.x, self.y - 1],
-                           [self.x - 1, self.y + 1],
-                           [self.x - 1, self.y - 1],
-                           [self.x + 1, self.y]]
+            self.coordinates = [[self.x, self.y],
+                                [self.x, self.y + 1],
+                                [self.x, self.y - 1],
+                                [self.x - 1, self.y + 1],
+                                [self.x - 1, self.y - 1],
+                                [self.x + 1, self.y]]
         elif self.orientation == 'left':
-            coordinates = [[self.x, self.y],
-                           [self.x, self.y + 1],
-                           [self.x, self.y - 1],
-                           [self.x + 1, self.y + 1],
-                           [self.x + 1, self.y - 1],
-                           [self.x - 1, self.y]]
+            self.coordinates = [[self.x, self.y],
+                                [self.x, self.y + 1],
+                                [self.x, self.y - 1],
+                                [self.x + 1, self.y + 1],
+                                [self.x + 1, self.y - 1],
+                                [self.x - 1, self.y]]
 
-        return coordinates
+        return self.coordinates
