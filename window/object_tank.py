@@ -14,7 +14,10 @@ class Tank:
                             [self.x + 1, self.y + 1],
                             [self.x, self.y - 1]]
 
-    def paint_tank(self):
+    def paint_tank(self, orientation, x, y):
+        self.x = x
+        self.y = y
+        self.orientation = orientation
         if self.orientation == 'top':
             self.coordinates = [[self.x, self.y],
                                 [self.x - 1, self.y],
