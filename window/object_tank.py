@@ -1,4 +1,5 @@
-import tkinter
+import window.window
+import time
 
 
 class Tank:
@@ -48,3 +49,98 @@ class Tank:
                                 [self.x - 1, self.y]]
 
         return self.coordinates
+
+
+class FireBall:
+    def __init__(self, game):
+        self.game = game
+        self.x = game.person_tank.x
+        self.y = game.person_tank.y
+        self.vector = game.person_tank.orientation
+        self.time_pause = 0.03
+
+    def fire(self):
+        if self.vector == 'top':
+            for i in range(self.x - 3, -1, -1):
+                self.game.m_win.tiles_massive[i][self.y]['bg'] = 'orange'
+                self.game.m_win.tiles_massive[i+1][self.y]['bg'] = window.window.colour1
+                time.sleep(self.time_pause)
+            self.game.m_win.tiles_massive[0][self.y]['bg'] = window.window.colour1
+        elif self.vector == 'down':
+            for i in range(self.x + 3, 35):
+                self.game.m_win.tiles_massive[i][self.y]['bg'] = 'orange'
+                self.game.m_win.tiles_massive[i-1][self.y]['bg'] = window.window.colour1
+                time.sleep(self.time_pause)
+            self.game.m_win.tiles_massive[34][self.y]['bg'] = window.window.colour1
+        elif self.vector == 'right':
+            for i in range(self.y + 3, 35):
+                self.game.m_win.tiles_massive[self.x][i]['bg'] = 'orange'
+                self.game.m_win.tiles_massive[self.x][i-1]['bg'] = window.window.colour1
+                time.sleep(self.time_pause)
+            self.game.m_win.tiles_massive[self.x][34]['bg'] = window.window.colour1
+        elif self.vector == 'left':
+            for i in range(self.y - 3, -1, -1):
+                self.game.m_win.tiles_massive[self.x][i]['bg'] = 'orange'
+                self.game.m_win.tiles_massive[self.x][i+1]['bg'] = window.window.colour1
+                time.sleep(self.time_pause)
+            self.game.m_win.tiles_massive[self.x][0]['bg'] = window.window.colour1
+
+
+class DriveTank:
+    def __init__(self, colour='black'):
+        self.x = 10
+        self.y = 10
+        self.orientation = 'top'
+        self.m_win = window.window.MainWindow()
+        self.person_tank = window.object_tank.Tank(colour)
+        self.flag_border = False
+        for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
+            self.m_win.tiles_massive[i[0]][i[1]]['bg'] = self.person_tank.colour
+
+    def w_press(self):
+        for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
+            self.m_win.tiles_massive[i[0]][i[1]]['bg'] = window.window.colour1
+        if self.orientation == 'top' and self.x - 1 != 0:
+            self.x -= 1
+            self.flag_border = False
+        else:
+            self.flag_border = True
+        self.orientation = 'top'
+        for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
+            self.m_win.tiles_massive[i[0]][i[1]]['bg'] = self.person_tank.colour
+
+    def a_press(self):
+        for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
+            self.m_win.tiles_massive[i[0]][i[1]]['bg'] = window.window.colour1
+        if self.orientation == 'left' and self.y - 1 != 0:
+            self.y -= 1
+            self.flag_border = False
+        else:
+            self.flag_border = True
+        self.orientation = 'left'
+        for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
+            self.m_win.tiles_massive[i[0]][i[1]]['bg'] = self.person_tank.colour
+
+    def s_press(self):
+        for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
+            self.m_win.tiles_massive[i[0]][i[1]]['bg'] = window.window.colour1
+        if self.orientation == 'down' and self.x + 1 != 34:
+            self.x += 1
+            self.flag_border = False
+        else:
+            self.flag_border = True
+        self.orientation = 'down'
+        for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
+            self.m_win.tiles_massive[i[0]][i[1]]['bg'] = self.person_tank.colour
+
+    def d_press(self):
+        for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
+            self.m_win.tiles_massive[i[0]][i[1]]['bg'] = window.window.colour1
+        if self.orientation == 'right' and self.y + 1 != 34:
+            self.y += 1
+            self.flag_border = False
+        else:
+            self.flag_border = True
+        self.orientation = 'right'
+        for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
+            self.m_win.tiles_massive[i[0]][i[1]]['bg'] = self.person_tank.colour
