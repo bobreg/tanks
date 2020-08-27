@@ -1,5 +1,11 @@
 import tkinter
 
+global colour1
+global colour2
+
+colour1 = 'seashell2'
+colour2 = 'seashell3'
+
 
 class MainWindow:
     def __init__(self):
@@ -14,7 +20,8 @@ class MainWindow:
         for i in range(35):
             self.tiles_massive.append([])
             for j in range(35):
-                self.tiles_massive[i] += [tkinter.Label(self.pole, height=1, width=2, borderwidth=1, relief='raised')]
+                self.tiles_massive[i] += [tkinter.Label(self.pole, height=1, width=2, borderwidth=1, relief='raised',
+                                                        bg=colour1)]
                 self.tiles_massive[i][j].grid(row=i, column=j)
 
     def win_task(self):

@@ -18,28 +18,28 @@ class Tank:
         self.x = x
         self.y = y
         self.orientation = orientation
-        if self.orientation == 'top':
+        if self.orientation == 'left':
             self.coordinates = [[self.x, self.y],
                                 [self.x - 1, self.y],
                                 [self.x + 1, self.y],
                                 [self.x - 1, self.y + 1],
                                 [self.x + 1, self.y + 1],
                                 [self.x, self.y - 1]]
-        elif self.orientation == 'down':
+        elif self.orientation == 'right':
             self.coordinates = [[self.x, self.y],
                                 [self.x - 1, self.y],
                                 [self.x + 1, self.y],
                                 [self.x - 1, self.y - 1],
                                 [self.x + 1, self.y - 1],
                                 [self.x, self.y + 1]]
-        elif self.orientation == 'right':
+        elif self.orientation == 'down':
             self.coordinates = [[self.x, self.y],
                                 [self.x, self.y + 1],
                                 [self.x, self.y - 1],
                                 [self.x - 1, self.y + 1],
                                 [self.x - 1, self.y - 1],
                                 [self.x + 1, self.y]]
-        elif self.orientation == 'left':
+        elif self.orientation == 'top':
             self.coordinates = [[self.x, self.y],
                                 [self.x, self.y + 1],
                                 [self.x, self.y - 1],
