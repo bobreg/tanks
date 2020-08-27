@@ -87,11 +87,11 @@ class FireBall:
 
 
 class DriveTank:
-    def __init__(self, colour='black'):
+    def __init__(self, m_win, colour='black'):
         self.x = 10
         self.y = 10
         self.orientation = 'top'
-        self.m_win = window.window.MainWindow()
+        self.m_win = m_win
         self.person_tank = window.object_tank.Tank(colour)
         self.flag_border = False
         for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
@@ -100,9 +100,8 @@ class DriveTank:
     def w_press(self):
         for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
             self.m_win.tiles_massive[i[0]][i[1]]['bg'] = window.window.colour1
-        if self.orientation == 'top' and self.x - 1 != 0:
+        if self.x - 1 != 0:
             self.x -= 1
-            self.flag_border = False
         else:
             self.flag_border = True
         self.orientation = 'top'
@@ -112,9 +111,8 @@ class DriveTank:
     def a_press(self):
         for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
             self.m_win.tiles_massive[i[0]][i[1]]['bg'] = window.window.colour1
-        if self.orientation == 'left' and self.y - 1 != 0:
+        if self.y - 1 != 0:
             self.y -= 1
-            self.flag_border = False
         else:
             self.flag_border = True
         self.orientation = 'left'
@@ -124,9 +122,8 @@ class DriveTank:
     def s_press(self):
         for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
             self.m_win.tiles_massive[i[0]][i[1]]['bg'] = window.window.colour1
-        if self.orientation == 'down' and self.x + 1 != 34:
+        if self.x + 1 != 34:
             self.x += 1
-            self.flag_border = False
         else:
             self.flag_border = True
         self.orientation = 'down'
@@ -136,9 +133,8 @@ class DriveTank:
     def d_press(self):
         for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
             self.m_win.tiles_massive[i[0]][i[1]]['bg'] = window.window.colour1
-        if self.orientation == 'right' and self.y + 1 != 34:
+        if self.y + 1 != 34:
             self.y += 1
-            self.flag_border = False
         else:
             self.flag_border = True
         self.orientation = 'right'

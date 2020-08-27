@@ -30,7 +30,8 @@ def drive_thread(flag, game):
 
 
 if __name__ == '__main__':
-    game = window.object_tank.DriveTank()
+    m_win = window.window.MainWindow()
+    game = window.object_tank.DriveTank(m_win)
     thread = threading.Thread(target=drive_thread, args=(True, game))
     thread.start()
 
