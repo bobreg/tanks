@@ -2,13 +2,15 @@ import keyboard
 import threading
 import time
 import window.window
+import constants.constants
 import window.object_tank
 
 
 class DriveTankPerson:
-    def __init__(self, m_win):
+    def __init__(self, m_win, colour):
         self.m_win = m_win
-        self.game = window.object_tank.DriveTank(self.m_win)
+        self.colour_tank_person = colour
+        self.game = window.object_tank.DriveTank(self.m_win, self.colour_tank_person, 19, 16)
         self.thread = threading.Thread(target=lambda: DriveTankPerson.drive_thread(self, True))
         self.ball = None
         self.thread_ball = None
@@ -20,6 +22,8 @@ class DriveTankPerson:
 
     def drive_thread(self, flag):
         while flag is True:
+            if self.game.flag_hit is True:
+                flag = False
             w_button = keyboard.is_pressed('w')
             a_button = keyboard.is_pressed('a')
             s_button = keyboard.is_pressed('s')
@@ -44,6 +48,6 @@ class DriveTankPerson:
 
 if __name__ == '__main__':
     main_win = window.window.MainWindow()
-    game = DriveTankPerson(main_win)
+    game = DriveTankPerson(main_win, constants.constants.COLOUR_TANK_PERSON)
     game.thread_person_tank_start()
     game.m_win.win_task()

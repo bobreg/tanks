@@ -1,10 +1,5 @@
 import tkinter
-
-global colour1
-global colour2
-
-colour1 = 'seashell2'
-colour2 = 'seashell3'
+import constants.constants
 
 
 class MainWindow:
@@ -17,12 +12,18 @@ class MainWindow:
         self.pole.place(x=10, y=10)
 
         self.tiles_massive = list()
-        for i in range(35):
+        for i in range(constants.constants.SIZE_POLE):
             self.tiles_massive.append([])
-            for j in range(35):
+            for j in range(constants.constants.SIZE_POLE):
                 self.tiles_massive[i] += [tkinter.Label(self.pole, height=1, width=2, borderwidth=1, relief='raised',
-                                                        bg=colour1)]
+                                                        bg=constants.constants.COLOUR_GAME_POLE)]
                 self.tiles_massive[i][j].grid(row=i, column=j)
+
+        for i in range(3, constants.constants.SIZE_POLE - 3, 6):
+            for j in range(3, constants.constants.SIZE_POLE - 3, 6):
+                for k in range(3):
+                    for m in range(3):
+                        self.tiles_massive[i+k][j+m]['bg'] = constants.constants.COLOUR_GAME_BORDER
 
     def win_task(self):
         self.win.mainloop()

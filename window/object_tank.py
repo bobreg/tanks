@@ -1,4 +1,5 @@
 import window.window
+import constants.constants
 import time
 
 
@@ -58,32 +59,55 @@ class FireBall:
         self.y = game.person_tank.y
         self.vector = game.person_tank.orientation
         self.time_pause = 0.05
+        self.flag_hit = False
 
     def fire(self):
         if self.vector == 'top':
             for i in range(self.x - 3, -1, -1):
-                self.game.m_win.tiles_massive[i][self.y]['bg'] = 'orange'
-                self.game.m_win.tiles_massive[i+1][self.y]['bg'] = window.window.colour1
+                if self.game.m_win.tiles_massive[i][self.y]['bg'] == constants.constants.COLOUR_TANK_PERSON or \
+                        self.game.m_win.tiles_massive[i][self.y]['bg'] == constants.constants.COLOUR_TANK_BOT:
+                    self.flag_hit = True
+                self.game.m_win.tiles_massive[i][self.y]['bg'] = constants.constants.COLOUR_BULLET
+                self.game.m_win.tiles_massive[i+1][self.y]['bg'] = constants.constants.COLOUR_GAME_POLE
                 time.sleep(self.time_pause)
-            self.game.m_win.tiles_massive[0][self.y]['bg'] = window.window.colour1
+                if self.flag_hit is True:
+                    break
+            self.game.m_win.tiles_massive[0][self.y]['bg'] = constants.constants.COLOUR_GAME_POLE
         elif self.vector == 'down':
-            for i in range(self.x + 3, 35):
-                self.game.m_win.tiles_massive[i][self.y]['bg'] = 'orange'
-                self.game.m_win.tiles_massive[i-1][self.y]['bg'] = window.window.colour1
+            for i in range(self.x + 3, constants.constants.SIZE_POLE):
+                if self.game.m_win.tiles_massive[i][self.y]['bg'] == constants.constants.COLOUR_TANK_PERSON or \
+                        self.game.m_win.tiles_massive[i][self.y]['bg'] == constants.constants.COLOUR_TANK_BOT:
+                    self.flag_hit = True
+                self.game.m_win.tiles_massive[i][self.y]['bg'] = constants.constants.COLOUR_BULLET
+                self.game.m_win.tiles_massive[i-1][self.y]['bg'] = constants.constants.COLOUR_GAME_POLE
                 time.sleep(self.time_pause)
-            self.game.m_win.tiles_massive[34][self.y]['bg'] = window.window.colour1
+                if self.flag_hit is True:
+                    break
+            self.game.m_win.tiles_massive[constants.constants.SIZE_POLE - 1][self.y]['bg'] = \
+                constants.constants.COLOUR_GAME_POLE
         elif self.vector == 'right':
-            for i in range(self.y + 3, 35):
-                self.game.m_win.tiles_massive[self.x][i]['bg'] = 'orange'
-                self.game.m_win.tiles_massive[self.x][i-1]['bg'] = window.window.colour1
+            for i in range(self.y + 3, constants.constants.SIZE_POLE):
+                if self.game.m_win.tiles_massive[self.x][i]['bg'] == constants.constants.COLOUR_TANK_PERSON or \
+                        self.game.m_win.tiles_massive[self.x][i]['bg'] == constants.constants.COLOUR_TANK_BOT:
+                    self.flag_hit = True
+                self.game.m_win.tiles_massive[self.x][i]['bg'] = constants.constants.COLOUR_BULLET
+                self.game.m_win.tiles_massive[self.x][i-1]['bg'] = constants.constants.COLOUR_GAME_POLE
                 time.sleep(self.time_pause)
-            self.game.m_win.tiles_massive[self.x][34]['bg'] = window.window.colour1
+                if self.flag_hit is True:
+                    break
+            self.game.m_win.tiles_massive[self.x][constants.constants.SIZE_POLE - 1]['bg'] = \
+                constants.constants.COLOUR_GAME_POLE
         elif self.vector == 'left':
             for i in range(self.y - 3, -1, -1):
-                self.game.m_win.tiles_massive[self.x][i]['bg'] = 'orange'
-                self.game.m_win.tiles_massive[self.x][i+1]['bg'] = window.window.colour1
+                if self.game.m_win.tiles_massive[self.x][i]['bg'] == constants.constants.COLOUR_TANK_PERSON or \
+                        self.game.m_win.tiles_massive[self.x][i]['bg'] == constants.constants.COLOUR_TANK_BOT:
+                    self.flag_hit = True
+                self.game.m_win.tiles_massive[self.x][i]['bg'] = constants.constants.COLOUR_BULLET
+                self.game.m_win.tiles_massive[self.x][i+1]['bg'] = constants.constants.COLOUR_GAME_POLE
                 time.sleep(self.time_pause)
-            self.game.m_win.tiles_massive[self.x][0]['bg'] = window.window.colour1
+                if self.flag_hit is True:
+                    break
+            self.game.m_win.tiles_massive[self.x][0]['bg'] = constants.constants.COLOUR_GAME_POLE
 
 
 class DriveTank:
@@ -94,20 +118,26 @@ class DriveTank:
         self.m_win = m_win
         self.person_tank = window.object_tank.Tank(colour)
         self.flag_border = False
+        self.flag_hit = False
+        self.flag_barrier = False
         for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
             self.m_win.tiles_massive[i[0]][i[1]]['bg'] = self.person_tank.colour
 
     def w_press(self):
-        if self.x - 1 != 0:
-            if self.m_win.tiles_massive[self.x - 2][self.y]['bg'] == window.window.colour1 and \
-               self.m_win.tiles_massive[self.x - 2][self.y + 1]['bg'] == window.window.colour1 and \
-               self.m_win.tiles_massive[self.x - 2][self.y - 1]['bg'] == window.window.colour1:
-                for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
-                    self.m_win.tiles_massive[i[0]][i[1]]['bg'] = window.window.colour1
-                self.x -= 1
-                self.orientation = 'top'
-                for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
-                    self.m_win.tiles_massive[i[0]][i[1]]['bg'] = self.person_tank.colour
+        if self.x - 1 != 0:  # если не вышли за границы поля
+            if self.m_win.tiles_massive[self.x - 2][self.y]['bg'] == constants.constants.COLOUR_GAME_POLE and \
+                    self.m_win.tiles_massive[self.x - 2][self.y + 1]['bg'] == constants.constants.COLOUR_GAME_POLE and \
+                    self.m_win.tiles_massive[self.x - 2][self.y - 1]['bg'] == constants.constants.COLOUR_GAME_POLE:  # если перед танком нет препятствия
+                for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):  # перекрасим положение танка в цвет поля
+                    if self.m_win.tiles_massive[i[0]][i[1]]['bg'] == constants.constants.COLOUR_BULLET:           # проверим не попал ли в танк выстрел
+                        self.flag_hit = True
+                    self.m_win.tiles_massive[i[0]][i[1]]['bg'] = constants.constants.COLOUR_GAME_POLE
+                if self.orientation == 'top':
+                    self.x -= 1  # сдвинем координату положения танка
+                self.orientation = 'top'  # поменяем ориентацию танка для этого направления
+                if self.flag_hit is False:  # если в танк не попали, то нарисуем новое положение танка
+                    for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
+                        self.m_win.tiles_massive[i[0]][i[1]]['bg'] = self.person_tank.colour
             else:
                 self.flag_border = True
         else:
@@ -115,47 +145,59 @@ class DriveTank:
 
     def a_press(self):
         if self.y - 1 != 0:
-            if self.m_win.tiles_massive[self.x][self.y - 2]['bg'] == window.window.colour1 and \
-               self.m_win.tiles_massive[self.x + 1][self.y - 2]['bg'] == window.window.colour1 and \
-               self.m_win.tiles_massive[self.x - 1][self.y - 2]['bg'] == window.window.colour1:
+            if self.m_win.tiles_massive[self.x][self.y - 2]['bg'] == constants.constants.COLOUR_GAME_POLE and \
+               self.m_win.tiles_massive[self.x + 1][self.y - 2]['bg'] == constants.constants.COLOUR_GAME_POLE and \
+               self.m_win.tiles_massive[self.x - 1][self.y - 2]['bg'] == constants.constants.COLOUR_GAME_POLE:
                 for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
-                    self.m_win.tiles_massive[i[0]][i[1]]['bg'] = window.window.colour1
-                self.y -= 1
+                    if self.m_win.tiles_massive[i[0]][i[1]]['bg'] == constants.constants.COLOUR_BULLET:
+                        self.flag_hit = True
+                    self.m_win.tiles_massive[i[0]][i[1]]['bg'] = constants.constants.COLOUR_GAME_POLE
+                if self.orientation == 'left':
+                    self.y -= 1
                 self.orientation = 'left'
-                for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
-                    self.m_win.tiles_massive[i[0]][i[1]]['bg'] = self.person_tank.colour
+                if self.flag_hit is False:
+                    for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
+                        self.m_win.tiles_massive[i[0]][i[1]]['bg'] = self.person_tank.colour
             else:
                 self.flag_border = True
         else:
             self.flag_border = True
 
     def s_press(self):
-        if self.x + 1 != 34:
-            if self.m_win.tiles_massive[self.x + 2][self.y]['bg'] == window.window.colour1 and \
-                    self.m_win.tiles_massive[self.x + 2][self.y + 1]['bg'] == window.window.colour1 and \
-                    self.m_win.tiles_massive[self.x + 2][self.y - 1]['bg'] == window.window.colour1:
+        if self.x + 1 != constants.constants.SIZE_POLE - 1:
+            if self.m_win.tiles_massive[self.x + 2][self.y]['bg'] == constants.constants.COLOUR_GAME_POLE and \
+                    self.m_win.tiles_massive[self.x + 2][self.y + 1]['bg'] == constants.constants.COLOUR_GAME_POLE and \
+                    self.m_win.tiles_massive[self.x + 2][self.y - 1]['bg'] == constants.constants.COLOUR_GAME_POLE:
                 for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
-                    self.m_win.tiles_massive[i[0]][i[1]]['bg'] = window.window.colour1
-                self.x += 1
+                    if self.m_win.tiles_massive[i[0]][i[1]]['bg'] == constants.constants.COLOUR_BULLET:
+                        self.flag_hit = True
+                    self.m_win.tiles_massive[i[0]][i[1]]['bg'] = constants.constants.COLOUR_GAME_POLE
+                if self.orientation == 'down':
+                    self.x += 1
                 self.orientation = 'down'
-                for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
-                    self.m_win.tiles_massive[i[0]][i[1]]['bg'] = self.person_tank.colour
+                if self.flag_hit is False:
+                    for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
+                        self.m_win.tiles_massive[i[0]][i[1]]['bg'] = self.person_tank.colour
             else:
                 self.flag_border = True
         else:
             self.flag_border = True
 
     def d_press(self):
-        if self.y + 1 != 34:
-            if self.m_win.tiles_massive[self.x][self.y + 2]['bg'] == window.window.colour1 and \
-                    self.m_win.tiles_massive[self.x + 1][self.y + 2]['bg'] == window.window.colour1 and \
-                    self.m_win.tiles_massive[self.x - 1][self.y + 2]['bg'] == window.window.colour1:
+        if self.y + 1 != constants.constants.SIZE_POLE - 1:
+            if self.m_win.tiles_massive[self.x][self.y + 2]['bg'] == constants.constants.COLOUR_GAME_POLE and \
+                    self.m_win.tiles_massive[self.x + 1][self.y + 2]['bg'] == constants.constants.COLOUR_GAME_POLE and \
+                    self.m_win.tiles_massive[self.x - 1][self.y + 2]['bg'] == constants.constants.COLOUR_GAME_POLE:
                 for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
-                    self.m_win.tiles_massive[i[0]][i[1]]['bg'] = window.window.colour1
-                self.y += 1
+                    if self.m_win.tiles_massive[i[0]][i[1]]['bg'] == constants.constants.COLOUR_BULLET:
+                        self.flag_hit = True
+                    self.m_win.tiles_massive[i[0]][i[1]]['bg'] = constants.constants.COLOUR_GAME_POLE
+                if self.orientation == 'right':
+                    self.y += 1
                 self.orientation = 'right'
-                for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
-                    self.m_win.tiles_massive[i[0]][i[1]]['bg'] = self.person_tank.colour
+                if self.flag_hit is False:
+                    for i in self.person_tank.paint_tank(self.orientation, self.x, self.y):
+                        self.m_win.tiles_massive[i[0]][i[1]]['bg'] = self.person_tank.colour
             else:
                 self.flag_border = True
         else:

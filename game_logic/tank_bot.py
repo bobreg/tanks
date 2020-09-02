@@ -1,6 +1,7 @@
 import threading
 import time
 import window.window
+import constants.constants
 import random
 import window.object_tank
 
@@ -20,6 +21,8 @@ class ThreadBotTank:
     def bot_tank_thread(self, flag=True):
         global vector
         while flag is True:
+            if self.bot.flag_hit is True:
+                flag = False
             if self.bot.flag_border is True:
                 target_vector = random.choice(vector)
                 while target_vector is self.wrong_vector:
@@ -29,7 +32,7 @@ class ThreadBotTank:
                 self.wrong_vector = []
                 target_vector = random.choice(vector)
 
-            count_step = random.randrange(15, 20)
+            count_step = random.randrange(6, 24, 6)
             i = 0
             while i < count_step:
                 if target_vector == 'top':
@@ -65,10 +68,10 @@ class ThreadBotTank:
 
 if __name__ == '__main__':
     m_win = window.window.MainWindow()
-    bot1 = ThreadBotTank(m_win, 'red', 3, 3)
-    bot2 = ThreadBotTank(m_win, 'red', 31, 3)
-    bot3 = ThreadBotTank(m_win, 'red', 31, 31)
-    bot4 = ThreadBotTank(m_win, 'red', 3, 31)
+    bot1 = ThreadBotTank(m_win, constants.constants.COLOUR_TANK_BOT, 1, 1)
+    bot2 = ThreadBotTank(m_win, constants.constants.COLOUR_TANK_BOT, 31, 1)
+    bot3 = ThreadBotTank(m_win, constants.constants.COLOUR_TANK_BOT, 31, 31)
+    bot4 = ThreadBotTank(m_win, constants.constants.COLOUR_TANK_BOT, 1, 31)
     bot1.thread_bot_tank_start()
     bot2.thread_bot_tank_start()
     bot3.thread_bot_tank_start()
