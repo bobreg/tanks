@@ -22,12 +22,13 @@ class ThreadBotTank:
         global vector
         while flag is True:
             if self.bot.flag_hit is True:
-                flag = False
-            if self.bot.flag_border is True:
+                break
+            if self.bot.flag_border is True or self.bot.flag_barrier is True:
                 target_vector = random.choice(vector)
                 while target_vector is self.wrong_vector:
                     target_vector = random.choice(vector)
                 self.bot.flag_border = False
+                self.bot.flag_barrier = False
             else:
                 self.wrong_vector = []
                 target_vector = random.choice(vector)
@@ -36,25 +37,25 @@ class ThreadBotTank:
             i = 0
             while i < count_step:
                 if target_vector == 'top':
-                    if self.bot.flag_border is True:
+                    if self.bot.flag_border is True or self.bot.flag_barrier is True:
                         self.wrong_vector += target_vector
                         i = count_step
                     else:
                         self.bot.w_press()
                 elif target_vector == 'down':
-                    if self.bot.flag_border is True:
+                    if self.bot.flag_border is True or self.bot.flag_barrier is True:
                         self.wrong_vector += target_vector
                         i = count_step
                     else:
                         self.bot.s_press()
                 elif target_vector == 'left':
-                    if self.bot.flag_border is True:
+                    if self.bot.flag_border is True or self.bot.flag_barrier is True:
                         self.wrong_vector += target_vector
                         i = count_step
                     else:
                         self.bot.a_press()
                 elif target_vector == 'right':
-                    if self.bot.flag_border is True:
+                    if self.bot.flag_border is True or self.bot.flag_barrier is True:
                         self.wrong_vector += target_vector
                         i = count_step
                     else:

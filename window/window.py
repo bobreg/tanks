@@ -5,7 +5,7 @@ import constants.constants
 class MainWindow:
     def __init__(self):
         self.win = tkinter.Tk()
-        self.win.geometry('1024x768')
+        self.win.geometry('640x768')
         self.win.title('Танчики от Alex_Chel_Man Inc.')
 
         self.pole = tkinter.Frame(self.win, relief='sunken', borderwidth=3)
