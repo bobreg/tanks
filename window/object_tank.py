@@ -130,10 +130,17 @@ class FireBall:
 
 class DriveTank:
     def __init__(self, m_win, colour='black', x=10, y=10):
-        self.x = x
+        self.x = x  # текушие координаты танка
         self.y = y
+        self.last_x = self.x  # предыдущие координаты танка
+        self.last_y = self.y
+        self.correction_x = 0  # коэфициенты смещение танка в зависимости от направления
+        self.correction_y = 0
+        self.border = 0  # переменная для уточнения достижения границы поля
         self.orientation = 'top'
-        self.m_win = m_win
+        self.last_orientation = 'top'
+        self.check_list_new_step = [[0, 0], [0, 0], [0, 0]]  # массив коэф.для проверки наличия препятствия перед танком
+        self.m_win = m_win  # переменная класса текущего игрового окна
         self.person_tank = window.object_tank.Tank(colour)
         self.flag_border = False
         self.flag_hit = False
@@ -141,6 +148,90 @@ class DriveTank:
         for i in self.person_tank.paint_tank(self.orientation, self.x, self.y)[0]:
             self.m_win.tiles_massive[i[0]][i[1]]['bg'] = self.person_tank.colour
 
+    def check_available_step(self):  # проверка на препятствия
+        if self.m_win.tiles_massive[self.x + self.check_list_new_step[0][0]][self.y + self.check_list_new_step[0][1]]['bg'] == constants.constants.COLOUR_GAME_POLE and \
+                self.m_win.tiles_massive[self.x + self.check_list_new_step[1][0]][self.y + self.check_list_new_step[1][1]]['bg'] == constants.constants.COLOUR_GAME_POLE and \
+                self.m_win.tiles_massive[self.x + self.check_list_new_step[2][0]][self.y + self.check_list_new_step[2][1]]['bg'] == constants.constants.COLOUR_GAME_POLE:
+            return True
+        else:
+            return False
+
+    def check_hit(self):
+        for i in self.person_tank.paint_tank(self.orientation, self.x, self.y)[0]:
+            if self.m_win.tiles_massive[i[0]][i[1]]['bg'] == constants.constants.COLOUR_BULLET:
+                return True
+        return False
+
+    def paint_step(self):  # отрисовка нового положения танка
+        for i in self.person_tank.paint_tank(self.last_orientation, self.last_x, self.last_y)[0]:
+            self.m_win.tiles_massive[i[0]][i[1]]['bg'] = constants.constants.COLOUR_GAME_POLE
+        for i in self.person_tank.paint_tank(self.last_orientation, self.last_x, self.last_y)[1]:
+            self.m_win.tiles_massive[i[0]][i[1]]['bg'] = constants.constants.COLOUR_GAME_POLE
+        for i in self.person_tank.paint_tank(self.orientation, self.x, self.y)[0]:
+            self.m_win.tiles_massive[i[0]][i[1]]['bg'] = self.person_tank.colour
+
+    def drive(self, orientation):
+        if orientation == 'top':
+            self.border = self.x - 1
+            self.check_list_new_step = [[-2, 0], [-2, -1], [-2, 1]]
+            if orientation != self.orientation:
+                self.last_orientation = self.orientation
+                self.orientation = orientation
+            else:
+                self.last_orientation = self.orientation
+                self.correction_x = -1
+                self.correction_y = 0
+        elif orientation == 'left':
+            self.border = self.y - 1
+            self.check_list_new_step = [[-1, -2], [0, -2], [1, -2]]
+            if orientation != self.orientation:
+                self.last_orientation = self.orientation
+                self.orientation = orientation
+            else:
+                self.last_orientation = self.orientation
+                self.correction_x = 0
+                self.correction_y = -1
+        elif orientation == 'down':
+            self.border = self.x + 1
+            self.check_list_new_step = [[2, 0], [2, -1], [2, 1]]
+            if orientation != self.orientation:
+                self.last_orientation = self.orientation
+                self.orientation = orientation
+            else:
+                self.last_orientation = self.orientation
+                self.correction_x = 1
+                self.correction_y = 0
+        elif orientation == 'right':
+            self.border = self.y + 1
+            self.check_list_new_step = [[-1, 2], [0, 2], [1, 2]]
+            if orientation != self.orientation:
+                self.last_orientation = self.orientation
+                self.orientation = orientation
+            else:
+                self.last_orientation = self.orientation
+                self.correction_x = 0
+                self.correction_y = 1
+        if DriveTank.check_hit(self) is False and self.flag_hit is False:
+            if self.border != 0 and self.border != constants.constants.SIZE_POLE - 1:  # если не вышли за границы поля
+                if DriveTank.check_available_step(self) is True:  # если перед танком нет препятствия
+                    self.last_x = self.x
+                    self.last_y = self.y
+                    self.x += self.correction_x  # сдвинем координату положения танка
+                    self.y += self.correction_y
+                    DriveTank.paint_step(self)
+                else:
+                    self.flag_barrier = True
+                    DriveTank.paint_step(self)
+            else:
+                self.flag_border = True
+        else:
+            self.flag_hit = True
+            for i in self.person_tank.paint_tank(self.orientation, self.x, self.y)[0]:
+                self.m_win.tiles_massive[i[0]][i[1]]['bg'] = constants.constants.COLOUR_GAME_POLE
+        self.correction_x = 0  # сбросим сдвиг танка и коэффициенты на проверку возможности хода
+        self.correction_y = 0
+        self.check_list_new_step = [[0, 0], [0, 0], [0, 0]]
+'''
     def w_press(self):
         if self.x - 1 != 0:  # если не вышли за границы поля
             if self.m_win.tiles_massive[self.x - 2][self.y]['bg'] == constants.constants.COLOUR_GAME_POLE and \
@@ -163,7 +254,6 @@ class DriveTank:
                     self.m_win.tiles_massive[i[0]][i[1]]['bg'] = self.person_tank.colour
                 for i in self.person_tank.paint_tank(self.orientation, self.x, self.y)[1]:
                     self.m_win.tiles_massive[i[0]][i[1]]['bg'] = constants.constants.COLOUR_GAME_POLE
-
         else:
             self.flag_border = True
 
@@ -248,3 +338,13 @@ class DriveTank:
                     self.m_win.tiles_massive[i[0]][i[1]]['bg'] = constants.constants.COLOUR_GAME_POLE
         else:
             self.flag_border = True
+'''
+
+'''
+попадание пули
+if self.m_win.tiles_massive[i[0]][i[1]]['bg'] == constants.constants.COLOUR_BULLET:           # проверим не попал ли в танк выстрел
+    self.flag_hit = True
+if self.flag_hit is False:  # если в танк не попали, то нарисуем новое положение танка
+    for i in self.person_tank.paint_tank(self.orientation, self.x, self.y)[0]:
+        self.m_win.tiles_massive[i[0]][i[1]]['bg'] = self.person_tank.colour
+'''

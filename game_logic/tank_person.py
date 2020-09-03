@@ -23,20 +23,20 @@ class DriveTankPerson:
     def drive_thread(self, flag):
         while flag is True:
             if self.game.flag_hit is True:
-                flag = False
+                break
             w_button = keyboard.is_pressed('w')
             a_button = keyboard.is_pressed('a')
             s_button = keyboard.is_pressed('s')
             d_button = keyboard.is_pressed('d')
             space_button = keyboard.is_pressed('space')
             if w_button is True:
-                self.game.w_press()
+                self.game.drive('top')
             if a_button is True:
-                self.game.a_press()
+                self.game.drive('left')
             if s_button is True:
-                self.game.s_press()
+                self.game.drive('down')
             if d_button is True:
-                self.game.d_press()
+                self.game.drive('right')
             if space_button is True:
                 DriveTankPerson.fire_ball_thread(self)
                 time.sleep(0.1)

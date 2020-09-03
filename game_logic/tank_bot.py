@@ -5,8 +5,6 @@ import constants.constants
 import random
 import window.object_tank
 
-vector = ['top', 'down', 'left', 'right']
-
 
 class ThreadBotTank:
     def __init__(self, m_win, colour, x, y):
@@ -14,54 +12,41 @@ class ThreadBotTank:
         self.colour = colour
         self.x = x
         self.y = y
+        self.last_target = x
+        self.target = 1
         self.wrong_vector = []
         self.bot = window.object_tank.DriveTank(m_win, self.colour, self.x, self.y)
         self.start_bot = threading.Thread(target=lambda: ThreadBotTank.bot_tank_thread(self, True))
 
     def bot_tank_thread(self, flag=True):
-        global vector
         while flag is True:
             if self.bot.flag_hit is True:
                 break
-            if self.bot.flag_border is True or self.bot.flag_barrier is True:
-                target_vector = random.choice(vector)
-                while target_vector is self.wrong_vector:
-                    target_vector = random.choice(vector)
-                self.bot.flag_border = False
-                self.bot.flag_barrier = False
+                # тут нужно очищать поле от танка
             else:
-                self.wrong_vector = []
-                target_vector = random.choice(vector)
+                if self.bot.flag_border is True or self.bot.flag_barrier is True:
+                    target_vector = random.choice(constants.constants.VECTOR)
+                    while target_vector in self.wrong_vector:
+                        target_vector = random.choice(constants.constants.VECTOR)
+                    self.bot.flag_border = False
+                    self.bot.flag_barrier = False
+                    self.wrong_vector = []
+                else:
+                    target_vector = random.choice(constants.constants.VECTOR)
 
-            count_step = random.randrange(6, 24, 6)
-            i = 0
-            while i < count_step:
-                if target_vector == 'top':
+                i = self.target
+                self.target = random.choice(constants.constants.STEP_LIST)
+                while i != self.target:
                     if self.bot.flag_border is True or self.bot.flag_barrier is True:
-                        self.wrong_vector += target_vector
-                        i = count_step
+                        self.wrong_vector += [target_vector]
+                        i = self.target
                     else:
-                        self.bot.w_press()
-                elif target_vector == 'down':
-                    if self.bot.flag_border is True or self.bot.flag_barrier is True:
-                        self.wrong_vector += target_vector
-                        i = count_step
-                    else:
-                        self.bot.s_press()
-                elif target_vector == 'left':
-                    if self.bot.flag_border is True or self.bot.flag_barrier is True:
-                        self.wrong_vector += target_vector
-                        i = count_step
-                    else:
-                        self.bot.a_press()
-                elif target_vector == 'right':
-                    if self.bot.flag_border is True or self.bot.flag_barrier is True:
-                        self.wrong_vector += target_vector
-                        i = count_step
-                    else:
-                        self.bot.d_press()
-                i += 1
-                time.sleep(0.1)
+                        self.bot.drive(target_vector)
+                    if i < self.target:
+                        i += 1
+                    elif i > self.target:
+                        i -= 1
+                    time.sleep(0.1)
 
     def thread_bot_tank_start(self):
         self.start_bot.start()
@@ -79,3 +64,31 @@ if __name__ == '__main__':
     bot4.thread_bot_tank_start()
 
     m_win.win_task()
+
+'''
+цикл движения
+                    if target_vector == 'top':
+                        if self.bot.flag_border is True or self.bot.flag_barrier is True:
+                            self.wrong_vector += [target_vector]
+                            i = count_step
+                        else:
+                            self.bot.drive(target_vector)
+                    elif target_vector == 'down':
+                        if self.bot.flag_border is True or self.bot.flag_barrier is True:
+                            self.wrong_vector += [target_vector]
+                            i = count_step
+                        else:
+                            self.bot.drive(target_vector)
+                    elif target_vector == 'left':
+                        if self.bot.flag_border is True or self.bot.flag_barrier is True:
+                            self.wrong_vector += [target_vector]
+                            i = count_step
+                        else:
+                            self.bot.drive(target_vector)
+                    elif target_vector == 'right':
+                        if self.bot.flag_border is True or self.bot.flag_barrier is True:
+                            self.wrong_vector += [target_vector]
+                            i = count_step
+                        else:
+                            self.bot.drive(target_vector)
+'''
