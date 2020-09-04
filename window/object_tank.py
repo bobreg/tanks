@@ -213,7 +213,9 @@ class DriveTank:
                 self.correction_y = 1
         if DriveTank.check_hit(self) is False and self.flag_hit is False:
             if self.border != 0 and self.border != constants.constants.SIZE_POLE - 1:  # если не вышли за границы поля
+                self.flag_border = False
                 if DriveTank.check_available_step(self) is True:  # если перед танком нет препятствия
+                    self.flag_barrier = False
                     self.last_x = self.x
                     self.last_y = self.y
                     self.x += self.correction_x  # сдвинем координату положения танка
@@ -224,6 +226,7 @@ class DriveTank:
                     DriveTank.paint_step(self)
             else:
                 self.flag_border = True
+                DriveTank.paint_step(self)
         else:
             self.flag_hit = True
             for i in self.person_tank.paint_tank(self.orientation, self.x, self.y)[0]:

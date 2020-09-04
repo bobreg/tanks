@@ -18,35 +18,70 @@ class ThreadBotTank:
         self.bot = window.object_tank.DriveTank(m_win, self.colour, self.x, self.y)
         self.start_bot = threading.Thread(target=lambda: ThreadBotTank.bot_tank_thread(self, True))
 
+    def likely_v(self, current_vectors):
+        likely_vector = random.randrange(100)
+        if likely_vector <= 10:
+            return current_vectors[0]
+        elif likely_vector <= 90:
+            return current_vectors[1]
+        elif likely_vector <= 100:
+            return current_vectors[2]
+
+    def choice_vector(self):
+        current_vectors = constants.constants.VECTOR.copy()
+        # хрень. это не работает
+        if self.bot.x == 1 and (self.bot.y != 1 and self.bot.y != 31):
+            current_vectors.remove('top')
+            return ThreadBotTank.likely_v(self, current_vectors)
+        elif self.bot.y == 1 and (self.bot.x != 1 and self.bot.y != 31):
+            current_vectors.remove('left')
+            return ThreadBotTank.likely_v(self, current_vectors)
+        elif self.bot.x == 31 and (self.bot.y != 1 and self.bot.y != 31):
+            current_vectors.remove('down')
+            return ThreadBotTank.likely_v(self, current_vectors)
+        elif self.bot.y == 31 and (self.bot.x != 1 and self.bot.y != 31):
+            current_vectors.remove('right')
+            return ThreadBotTank.likely_v(self, current_vectors)
+
+        elif self.bot.x == 1 and self.bot.x == 1:
+            current_vectors.remove('left')
+            current_vectors.remove('top')
+            print(1)
+            return random.choice(current_vectors)
+        elif self.bot.x == 31 and self.bot.x == 1:
+            current_vectors.remove('left')
+            current_vectors.remove('down')
+            print(1)
+            return random.choice(current_vectors)
+        elif self.bot.x == 1 and self.bot.x == 31:
+            current_vectors.remove('right')
+            current_vectors.remove('top')
+            print(1)
+            return random.choice(current_vectors)
+        elif self.bot.x == 31 and self.bot.x == 31:
+            current_vectors.remove('right')
+            current_vectors.remove('down')
+            print(1)
+            return random.choice(current_vectors)
+        else:
+            return random.choice(current_vectors)
+
     def bot_tank_thread(self, flag=True):
         while flag is True:
             if self.bot.flag_hit is True:
-                break
-                # тут нужно очищать поле от танка
+                flag = self.bot.flag_hit
+                # тут нужно очищать поле от танка'
             else:
-                if self.bot.flag_border is True or self.bot.flag_barrier is True:
-                    target_vector = random.choice(constants.constants.VECTOR)
-                    while target_vector in self.wrong_vector:
-                        target_vector = random.choice(constants.constants.VECTOR)
-                    self.bot.flag_border = False
-                    self.bot.flag_barrier = False
-                    self.wrong_vector = []
-                else:
-                    target_vector = random.choice(constants.constants.VECTOR)
-
-                i = self.target
                 self.target = random.choice(constants.constants.STEP_LIST)
-                while i != self.target:
-                    if self.bot.flag_border is True or self.bot.flag_barrier is True:
-                        self.wrong_vector += [target_vector]
-                        i = self.target
-                    else:
-                        self.bot.drive(target_vector)
-                    if i < self.target:
-                        i += 1
-                    elif i > self.target:
-                        i -= 1
+                vector = ThreadBotTank.choice_vector(self)
+                print(self.bot.x, self.bot.y, self.target, vector)
+                time.sleep(1)
+                while (self.bot.x or self.bot.y) != self.target:
+                    self.bot.drive(vector)
+                    if (self.bot.flag_border or self.bot.flag_barrier or self.bot.flag_hit) is True:
+                        break
                     time.sleep(0.1)
+        print('поток остановлен', self)
 
     def thread_bot_tank_start(self):
         self.start_bot.start()
@@ -91,4 +126,35 @@ if __name__ == '__main__':
                             i = count_step
                         else:
                             self.bot.drive(target_vector)
+'''
+
+'''
+старый алгоритм движения
+            if self.bot.flag_hit is True:
+                break
+                # тут нужно очищать поле от танка'
+            else:
+                if self.bot.flag_border is True or self.bot.flag_barrier is True:
+                    target_vector = random.choice(constants.constants.VECTOR)
+                    while target_vector in self.wrong_vector:
+                        target_vector = random.choice(constants.constants.VECTOR)
+                    self.bot.flag_border = False
+                    self.bot.flag_barrier = False
+                    self.wrong_vector = []
+                else:
+                    target_vector = random.choice(constants.constants.VECTOR)
+
+                i = self.target
+                self.target = random.choice(constants.constants.STEP_LIST)
+                while i != self.target:
+                    if self.bot.flag_border is True or self.bot.flag_barrier is True:
+                        self.wrong_vector += [target_vector]
+                        i = self.target
+                    else:
+                        self.bot.drive(target_vector)
+                    if i < self.target:
+                        i += 1
+                    elif i > self.target:
+                        i -= 1
+                    time.sleep(0.1)
 '''
