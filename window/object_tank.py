@@ -74,7 +74,8 @@ class FireBall:
                     self.flag_hit_border = True
                 else:
                     if self.game.m_win.tiles_massive[i][self.y]['bg'] == constants.constants.COLOUR_TANK_PERSON or \
-                            self.game.m_win.tiles_massive[i][self.y]['bg'] == constants.constants.COLOUR_TANK_BOT:
+                            self.game.m_win.tiles_massive[i][self.y]['bg'] == constants.constants.COLOUR_TANK_BOT or \
+                            self.game.m_win.tiles_massive[i][self.y]['bg'] == constants.constants.COLOUR_BULLET:
                         self.flag_hit_border = True
                     self.game.m_win.tiles_massive[i][self.y]['bg'] = constants.constants.COLOUR_BULLET
                     self.game.m_win.tiles_massive[i+1][self.y]['bg'] = constants.constants.COLOUR_GAME_POLE
@@ -88,7 +89,8 @@ class FireBall:
                     self.flag_hit_border = True
                 else:
                     if self.game.m_win.tiles_massive[i][self.y]['bg'] == constants.constants.COLOUR_TANK_PERSON or \
-                            self.game.m_win.tiles_massive[i][self.y]['bg'] == constants.constants.COLOUR_TANK_BOT:
+                            self.game.m_win.tiles_massive[i][self.y]['bg'] == constants.constants.COLOUR_TANK_BOT or \
+                            self.game.m_win.tiles_massive[i][self.y]['bg'] == constants.constants.COLOUR_BULLET:
                         self.flag_hit_border = True
                     self.game.m_win.tiles_massive[i][self.y]['bg'] = constants.constants.COLOUR_BULLET
                     self.game.m_win.tiles_massive[i-1][self.y]['bg'] = constants.constants.COLOUR_GAME_POLE
@@ -103,7 +105,8 @@ class FireBall:
                     self.flag_hit_border = True
                 else:
                     if self.game.m_win.tiles_massive[self.x][i]['bg'] == constants.constants.COLOUR_TANK_PERSON or \
-                            self.game.m_win.tiles_massive[self.x][i]['bg'] == constants.constants.COLOUR_TANK_BOT:
+                            self.game.m_win.tiles_massive[self.x][i]['bg'] == constants.constants.COLOUR_TANK_BOT or \
+                            self.game.m_win.tiles_massive[self.x][i]['bg'] == constants.constants.COLOUR_BULLET:
                         self.flag_hit_border = True
                     self.game.m_win.tiles_massive[self.x][i]['bg'] = constants.constants.COLOUR_BULLET
                     self.game.m_win.tiles_massive[self.x][i-1]['bg'] = constants.constants.COLOUR_GAME_POLE
@@ -118,7 +121,8 @@ class FireBall:
                     self.flag_hit_border = True
                 else:
                     if self.game.m_win.tiles_massive[self.x][i]['bg'] == constants.constants.COLOUR_TANK_PERSON or \
-                            self.game.m_win.tiles_massive[self.x][i]['bg'] == constants.constants.COLOUR_TANK_BOT:
+                            self.game.m_win.tiles_massive[self.x][i]['bg'] == constants.constants.COLOUR_TANK_BOT or \
+                            self.game.m_win.tiles_massive[self.x][i]['bg'] == constants.constants.COLOUR_BULLET:
                         self.flag_hit_border = True
                     self.game.m_win.tiles_massive[self.x][i]['bg'] = constants.constants.COLOUR_BULLET
                     self.game.m_win.tiles_massive[self.x][i+1]['bg'] = constants.constants.COLOUR_GAME_POLE
