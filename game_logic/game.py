@@ -21,3 +21,4 @@ def new_game():
 
 if __name__ == '__main__':
     new_game()
+    print(1)
